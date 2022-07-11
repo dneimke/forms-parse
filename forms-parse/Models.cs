@@ -1,6 +1,6 @@
 namespace FormsParse.Models
 {
-    internal static class KnownColors
+    public static class KnownColors
     {
         public const string Red = nameof(Red);
         public const string Blue = nameof(Blue);
@@ -10,7 +10,7 @@ namespace FormsParse.Models
 
         public const string Default = Blue;
 
-        internal static bool IsKnownColor(string color) => color switch
+        public static bool IsKnownColor(string color) => color switch
         {
             nameof(Red) => true,
             nameof(Green) => true,

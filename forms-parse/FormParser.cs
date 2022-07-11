@@ -170,7 +170,7 @@ namespace FormsParse
 
             if (!string.IsNullOrEmpty(token))
             {
-                _currentItem.Color = token;
+                _currentItem.Color = KnownColors.IsKnownColor(token) ? token : KnownColors.Default;
             }
         }
     }

@@ -28,8 +28,4 @@
     <ProjectReference Include="..\forms-parse\forms-parse.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ComplexTags\" />
-  </ItemGroup>
-
 </Project>
