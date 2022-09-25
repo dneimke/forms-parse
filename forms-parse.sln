@@ -5,6 +5,7 @@ VisualStudioVersion = 17.3.32611.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Items", "Items", "{8265C5F6-A44B-44AE-84E6-3958893BA4B9}"
 	ProjectSection(SolutionItems) = preProject
+		.github\workflows\publish.yml = .github\workflows\publish.yml
 		readme.md = readme.md
 	EndProjectSection
 EndProject
