@@ -19,59 +19,64 @@ namespace FormsParse.Models
             nameof(Black) => true,
             _ => false
         };
-
-        //        internal static string Parse(string color) => color switch
-        //{
-        //            IsKnownColor(color) => color,
-        //            _ => Default
-        //        };
     }
 
     public class FormDefinition
     {
-        private FormGroup _currentGroup;
+        private FormRow _currentRow;
 
-        public FormGroup CurrentGroup => _currentGroup;
+        public FormRow CurrentRow => _currentRow;
 
 
         public FormDefinition()
         {
-            _currentGroup = new();
-            Groups.Add(_currentGroup);
+            _currentRow = new();
+            Rows.Add(_currentRow);
         }
 
-        public FormDefinition(List<FormGroup> groups)
+        public FormDefinition(List<FormRow> groups)
         {
-            Groups = groups ?? throw new ArgumentNullException(nameof(groups));
+            Rows = groups ?? throw new ArgumentNullException(nameof(groups));
 
             if(groups.Any()) { 
-                _currentGroup = groups.Last();
+                _currentRow = groups.Last();
             }
             else
             {
-                _currentGroup = new();
-                Groups.Add(_currentGroup);
+                _currentRow = new();
+                Rows.Add(_currentRow);
             }
         }
 
-        public int GroupCount => Groups.Count;
-        public List<FormItem> AllItems => Groups.SelectMany(x => x.Columns)
+        public int RowCount => Rows.Count;
+        public List<FormItem> AllItems => Rows.SelectMany(x => x.Columns)
                     .SelectMany(x => x.Items)
                     .ToList();
         public int TotalItemCount => AllItems.Count;
-        public List<FormGroup> Groups { get; private set; } = new();
+        public List<FormRow> Rows { get; private set; } = new();
+    }
 
-        void NewGroup()
+    public abstract class FormItem
+    {
+        public string Type { get; protected set; } = "";
+        public string Name { get; set; } = "";
+        public string Color { get; set; } = KnownColors.Default;
+    }
+
+    public class Button : FormItem 
+    {
+        public Button()
         {
-            _currentGroup = new();
-            Groups.Add(_currentGroup);
+            Type = nameof(Button);
         }
     }
 
-    public class FormItem
+    public class Label : FormItem 
     {
-        public string Name { get; set; } = "";
-        public string Color { get; set; } = KnownColors.Default;
+        public Label()
+        {
+            Type = nameof(Label);
+        }
     }
 
     public class FormColumn
@@ -79,11 +84,11 @@ namespace FormsParse.Models
         public List<FormItem> Items { get; } = new();
     }
 
-    public class FormGroup
+    public class FormRow
     {
         public List<FormColumn> Columns { get; } = new();
 
-        public FormGroup()
+        public FormRow()
         {
             AddColumn();
         }

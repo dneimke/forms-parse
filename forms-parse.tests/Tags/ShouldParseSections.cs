@@ -27,10 +27,10 @@ namespace forms_parse.tests.SimpleTags
 
         void AndIsDefinedCorrectly()
         {
-            _form!.Groups.Count.ShouldBe(2);
+            _form!.Rows.Count.ShouldBe(2);
             
-            var group = _form.Groups[1];
-            _form.CurrentGroup.ShouldBe(group);
+            var group = _form.Rows[1];
+            _form.CurrentRow.ShouldBe(group);
             group.Columns.Count.ShouldBe(1);
         }
     }

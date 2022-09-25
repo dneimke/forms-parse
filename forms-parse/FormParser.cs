@@ -1,14 +1,14 @@
 using FormsParse.Models;
+using System.Xml.Linq;
 
 namespace FormsParse
 {
-
     public class FormParser
     {
-        private FormGroup _currentGroup = new();
-        private FormItem _currentItem = new();
+        private FormRow _currentGroup = new();
+        private FormItem _currentItem;
 
-        private List<FormGroup> _groups = new();
+        private readonly List<FormRow> _groups = new();
         private int _pos = -1;
         private string _input = "";
 
@@ -17,7 +17,7 @@ namespace FormsParse
         bool IsTagSeparator => _input[_pos] is ',';
         bool IsColumnSeparator => _input[_pos] is '|';
         bool IsTagClose => _input[_pos] is ')';
-        bool IsSectionBreak => _input[_pos] is '-' && CanMoveNext && Peek() is '-';
+        bool IsRowBreak => _input[_pos] is '-' && CanMoveNext && Peek() is '-';
         bool IsCompoundTag => _input[_pos] is '#' && CanMoveNext && Peek() is '(';
         bool IsWhitespace => _input[_pos] is ' ';
 
@@ -39,8 +39,6 @@ namespace FormsParse
 
             while (CanMoveNext)
             {
-                // Console.WriteLine($"Looping: {_pos}");
-
                 Next();
             }
 
@@ -53,7 +51,7 @@ namespace FormsParse
             {
                 _pos++;
             }
-            else if(IsSectionBreak)
+            else if(IsRowBreak)
             {
                 ParseSectionBreak();
             }
@@ -77,56 +75,78 @@ namespace FormsParse
 
         private void ParseColumnSeparator()
         {
-            _currentGroup.AddColumn();
-            _pos++;
+            if(IsColumnSeparator)
+            {
+                _currentGroup.AddColumn();
+                _pos++;
+            }
         }
 
         void ParseTag()
         {
-            _currentItem = new();
-
             if(IsCompoundTag)
             {
-                _currentItem = new();
-                _currentGroup.AddItem(_currentItem);
-
                 ParseCompoundTag();
             }
             else
             {
-                _currentItem = new();
+                _currentItem = new Button
+                {
+                    Name = ParseTagName()
+                };
                 _currentGroup.AddItem(_currentItem);
-
-                ParseTagName();
             }
         }
 
 
+        // (name[, color='Blue', type='Button']))
         void ParseCompoundTag()
         {
             ParseTagOpen();
-            ParseTagName(true);
+            string name = ParseTagName(true);
             ParseTagSeparator();
-            ParseTagColor();
+            string color = ParseTagColor();
+            ParseTagSeparator();
+            string type = ParseTagType();
             ParseTagClose();
+
+            if(type == "Button")
+            {
+                _currentItem = new Button();
+            }
+            else
+            {
+                _currentItem = new Label();
+            }
+
+            _currentItem.Name = name;
+            _currentItem.Color = color;     
+
+            _currentGroup.AddItem(_currentItem);
         }
 
         void ParseTagOpen()
         {
             // #(
-            _pos++;
-            _pos++;
+            if(IsCompoundTag)
+            {
+                _pos++;
+                _pos++;
+            }
         }
 
         void ParseTagClose()
         {
             // )
-            _pos++;
+            if(IsTagClose) _pos++;
         }
 
-        void ParseTagName(bool isCompound = false)
+        string ParseTagName(bool isCompound = false)
         {
+            ParseWhitespace();
+
             var token = "";
+            
             while (CanMoveNext && !IsNewLine)
             {
                 if (isCompound && IsTagSeparator || IsTagClose)
@@ -135,17 +155,14 @@ namespace FormsParse
                 token += _input[_pos++];
             }
 
-            if (!string.IsNullOrEmpty(token))
-            {
-                _currentItem.Name = token;
-            }
+            return token;
         }
 
         void ParseTagSeparator()
         {
             // ,
             ParseWhitespace();
-            _pos++;
+            if(IsTagSeparator) _pos++;
             ParseWhitespace();
         }
 
@@ -157,7 +174,7 @@ namespace FormsParse
             }
         }
 
-        void ParseTagColor()
+        string ParseTagColor()
         {
             var token = "";
             while (CanMoveNext && !IsNewLine)
@@ -168,10 +185,21 @@ namespace FormsParse
                 token += _input[_pos++];
             }
 
-            if (!string.IsNullOrEmpty(token))
+            return KnownColors.IsKnownColor(token) ? token : KnownColors.Default;
+        }
+
+        string ParseTagType()
+        {
+            var token = "";
+            while (CanMoveNext && !IsNewLine)
             {
-                _currentItem.Color = KnownColors.IsKnownColor(token) ? token : KnownColors.Default;
+                if (IsTagSeparator || IsTagClose)
+                    break;
+
+                token += _input[_pos++];
             }
+
+            return token == "Label" ? "Label" : "Button";
         }
     }
     

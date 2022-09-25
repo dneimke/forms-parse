@@ -27,10 +27,10 @@ namespace forms_parse.tests.SimpleTags
 
         void AndIsDefinedCorrectly()
         {
-            _form!.Groups.Count.ShouldBe(1);
+            _form!.Rows.Count.ShouldBe(1);
             
-            var group = _form.Groups[0];
-            _form.CurrentGroup.ShouldBe(group);
+            var group = _form.Rows[0];
+            _form.CurrentRow.ShouldBe(group);
             group.Columns.Count.ShouldBe(2);
 
             var buttons1 = group.Columns[0].Items;
