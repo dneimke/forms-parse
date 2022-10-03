@@ -40,7 +40,7 @@ namespace forms_parse.tests.SimpleTags
             buttons[0].Color.ShouldBe(KnownColors.Default);
 
             buttons[1].Name.ShouldBe("b");
-            buttons[1].Color.ShouldBe(KnownColors.Default);
+            buttons[1].Color.ShouldBe("NotAKnownColor");
         }
     }
 }

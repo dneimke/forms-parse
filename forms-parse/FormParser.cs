@@ -103,14 +103,15 @@ namespace FormsParse
         void ParseCompoundTag()
         {
             ParseTagOpen();
-            string name = ParseTagName(true);
-            ParseTagSeparator();
-            string color = ParseTagColor();
-            ParseTagSeparator();
-            string type = ParseTagType();
+            var attributeString = ParseTagAttributes();
             ParseTagClose();
 
-            if(type == "Button")
+            var attributes = AttributeParser.Parse(attributeString);
+            attributes.TryGetValue("type", out var type);
+            attributes.TryGetValue("name", out var name);
+            attributes.TryGetValue("color", out var color);
+
+            if (string.IsNullOrEmpty(type) || type.ToLower() == "button")
             {
                 _currentItem = new Button();
             }
@@ -119,8 +120,8 @@ namespace FormsParse
                 _currentItem = new Label();
             }
 
-            _currentItem.Name = name;
-            _currentItem.Color = color;     
+            _currentItem.Name = name ?? throw new ApplicationException("Name attribute not present in collection");
+            _currentItem.Color = color ?? KnownColors.Default;     
 
             _currentGroup.AddItem(_currentItem);
         }
@@ -149,21 +150,24 @@ namespace FormsParse
             
             while (CanMoveNext && !IsNewLine)
             {
-                if (isCompound && IsTagSeparator || IsTagClose)
-                    break;
-
-                token += _input[_pos++];
+               token += _input[_pos++];
             }
 
             return token;
         }
 
-        void ParseTagSeparator()
+        string ParseTagAttributes()
         {
-            // ,
             ParseWhitespace();
-            if(IsTagSeparator) _pos++;
-            ParseWhitespace();
+
+            var token = "";
+
+            while (CanMoveNext && !IsTagClose && !IsNewLine)
+            {
+                token += _input[_pos++];
+            }
+
+            return token;
         }
 
         private void ParseWhitespace()
@@ -172,34 +176,6 @@ namespace FormsParse
             {
                 _pos++;
             }
-        }
-
-        string ParseTagColor()
-        {
-            var token = "";
-            while (CanMoveNext && !IsNewLine)
-            {
-                if (IsTagSeparator || IsTagClose)
-                    break;
-
-                token += _input[_pos++];
-            }
-
-            return KnownColors.IsKnownColor(token) ? token : KnownColors.Default;
-        }
-
-        string ParseTagType()
-        {
-            var token = "";
-            while (CanMoveNext && !IsNewLine)
-            {
-                if (IsTagSeparator || IsTagClose)
-                    break;
-
-                token += _input[_pos++];
-            }
-
-            return token == "Label" ? "Label" : "Button";
         }
     }
     
