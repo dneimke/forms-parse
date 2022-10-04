@@ -79,6 +79,14 @@ namespace FormsParse.Models
         }
     }
 
+    public class Switch : FormItem
+    {
+        public Switch()
+        {
+            Type = nameof(Switch);
+        }
+    }
+
     public class FormColumn
     {
         public List<FormItem> Items { get; } = new();

@@ -4,14 +4,15 @@ using Shouldly;
 
 namespace forms_parse.tests.SimpleTags
 {
-    public class ShouldParseUnknownColors : ContainerTestBase
+    public class ShouldParseAllTypes : ContainerTestBase
     {
         string _config = "";
         FormDefinition? _form;
 
-        void GivenAConfigurationWithTwoButtons()
+        void GivenAConfiguration()
         {
-            _config = string.Format("a{0}#(b, NotAKnownColor)", Environment.NewLine);
+            _config = string.Format("#(name: a, type: label){0}#(name: a, type: switch){0}#(name: a, type: button){0}#(name: a, type: unknown){0}", 
+                Environment.NewLine);
         }
 
         void WhenTheConfigurationIsParsed()
@@ -25,22 +26,19 @@ namespace forms_parse.tests.SimpleTags
             _form.ShouldNotBeNull();
         }
 
-        void AndIsDefinedCorrectly()
+        void AndAllTypesAreCorrect()
         {
             _form!.Rows.Count.ShouldBe(1);
             
             var group = _form.Rows[0];
-            _form.CurrentRow.ShouldBe(group);
-            group.Columns.Count.ShouldBe(1);
 
             var buttons = group.Columns[0].Items;
-            buttons.Count.ShouldBe(2);
+            buttons.Count.ShouldBe(4);
 
-            buttons[0].Name.ShouldBe("a");
-            buttons[0].Color.ShouldBe(KnownColors.Default);
-
-            buttons[1].Name.ShouldBe("b");
-            buttons[1].Color.ShouldBe("NotAKnownColor");
+            buttons[0].Type.ShouldBe(nameof(Label));
+            buttons[1].Type.ShouldBe(nameof(Switch));
+            buttons[2].Type.ShouldBe(nameof(Button));
+            buttons[3].Type.ShouldBe(nameof(Button));
         }
     }
 }

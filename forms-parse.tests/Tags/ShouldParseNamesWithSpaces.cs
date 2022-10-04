@@ -4,14 +4,15 @@ using Shouldly;
 
 namespace forms_parse.tests.SimpleTags
 {
-    public class ShouldParseUnknownColors : ContainerTestBase
+    public class ShouldParseNamesWithSpaces : ContainerTestBase
     {
         string _config = "";
         FormDefinition? _form;
 
-        void GivenAConfigurationWithTwoButtons()
+        void GivenAConfiguration()
         {
-            _config = string.Format("a{0}#(b, NotAKnownColor)", Environment.NewLine);
+            _config = string.Format("#(name: A and B, type: label){0}#(A and B)", 
+                Environment.NewLine);
         }
 
         void WhenTheConfigurationIsParsed()
@@ -25,22 +26,18 @@ namespace forms_parse.tests.SimpleTags
             _form.ShouldNotBeNull();
         }
 
-        void AndIsDefinedCorrectly()
+        void AndAllTypesAreCorrect()
         {
             _form!.Rows.Count.ShouldBe(1);
             
             var group = _form.Rows[0];
-            _form.CurrentRow.ShouldBe(group);
-            group.Columns.Count.ShouldBe(1);
 
             var buttons = group.Columns[0].Items;
             buttons.Count.ShouldBe(2);
 
-            buttons[0].Name.ShouldBe("a");
-            buttons[0].Color.ShouldBe(KnownColors.Default);
-
-            buttons[1].Name.ShouldBe("b");
-            buttons[1].Color.ShouldBe("NotAKnownColor");
+            buttons[0].Name.ShouldBe("A and B");
+            buttons[1].Name.ShouldBe("A and B");
+            
         }
     }
 }

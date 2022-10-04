@@ -11,6 +11,8 @@ The following sections explain the syntax for creating forms.
 
 ## Buttons
 
+Creates 2 buttons on the same row named 'a' and 'b'.
+
 ```
 a
 b
@@ -19,7 +21,7 @@ b
 
 ## Rows
 
-Buttons can be grouped into rows by using the `--` delimiter. The following example shows 4 buttons grouped into 2 separate rows. 
+Buttons can be grouped into rows using the `--` delimiter. The following example shows 4 buttons grouped into 2 separate rows. 
 
 ```
 a
@@ -29,7 +31,7 @@ c
 d
 ```
 
-It is important to place the row delimiter on a separate row. The following example shows an invalid syntax where only a single row is created for all 4 buttons.
+It is important to place the row delimiter on a separate row. The following example shows an _invalid_ syntax where only a single row is created for all 4 buttons.
 
 **Invalid row syntax**
 ```
@@ -43,11 +45,18 @@ d
 
 Use the `#(name[, color, label])` syntax to declare compound buttons which allow other button properties to be configured.
 
+You can also use named attributes which allows you to specify attributes in any order. The following 2 declarations produce the same button:
+
+```
+#(D, blue, switch)
+#(name: D, type: switch, color: blue)
+```
+
 Compound button syntax requires use of the escaping construct `#(...)` which can then contain the following properties:
 
 - name - the name to display for the button
 - color - one of the permitted known colors.  If a non-known color
-- label - allows you to specify either `Label` or `Button`. This is an optional value and will default to `Button` if not provided.
+- type - allows you to specify the button type from the following valid types - `label`, `button`, and `switch`. This is an optional value and will default to `Button` if not provided or if the value provided does not match any of the valid types.
 
 **Examples**
 
@@ -55,15 +64,20 @@ Compound button syntax requires use of the escaping construct `#(...)` which can
 A red button with a label of 'A'
 #(A, Red)
 
+A red button with a label of 'A' using named parameters
+#(name: A, color: Red)
+
 A button named 'B' with the default color applied.  This is equivalent to using non-compound syntax
 #(B)
 
-A button named 'C' with the default color applied.
-#(C, NonExistantColor)
-
-A label named 'D' with the Blue color applied.
+A label named 'C' with the Blue color applied.
 #(D, Blue, Label)
+
+A switch named 'D' with the Green color applied.
+#(name: D, color: blue, type: switch)
 ```
+
+**Note**: when using named parameters, attributes can be specified in any order. 
 
 ## Columns
 
@@ -139,6 +153,9 @@ Stroke
 #(Special, Red)
 #(Card, Green)
 #(Injury, Green)
+--
+#(name: Possession For, type: switch)
+#(name: Possession Ag, type: switch)
 ```
 
 Generates this coded form:
