@@ -14,7 +14,6 @@ namespace FormsParse
 
         bool CanMoveNext => _input.Length > 0 && _pos < _input.Length;
         bool IsNewLine => _input[_pos] is '\n' || _input[_pos] is '\r';
-        bool IsTagSeparator => _input[_pos] is ',';
         bool IsColumnSeparator => _input[_pos] is '|';
         bool IsTagClose => _input[_pos] is ')';
         bool IsRowBreak => _input[_pos] is '-' && CanMoveNext && Peek() is '-';
@@ -99,7 +98,7 @@ namespace FormsParse
         }
 
 
-        // (name[, color='Blue', type='Button']))
+        // #(name[, color='Blue', type='Button']))
         void ParseCompoundTag()
         {
             ParseTagOpen();
@@ -111,15 +110,14 @@ namespace FormsParse
             attributes.TryGetValue("name", out var name);
             attributes.TryGetValue("color", out var color);
 
-            if (string.IsNullOrEmpty(type) || type.ToLower() == "button")
+            _currentItem = type?.ToLower() switch
             {
-                _currentItem = new Button();
-            }
-            else
-            {
-                _currentItem = new Label();
-            }
-
+                "button" => new Button(),
+                "label" => new Label(),
+                "switch" => new Switch(),
+                _ => new Button()
+            };
+                
             _currentItem.Name = name ?? throw new ApplicationException("Name attribute not present in collection");
             _currentItem.Color = color ?? KnownColors.Default;     
 
