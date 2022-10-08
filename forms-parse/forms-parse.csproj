@@ -6,7 +6,7 @@
     <RootNamespace>FormsParse</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
     <Authors>Darren Neimke</Authors>
     <Company>Matchlib.com</Company>
   </PropertyGroup>

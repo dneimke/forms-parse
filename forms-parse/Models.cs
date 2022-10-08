@@ -58,6 +58,14 @@ namespace FormsParse.Models
 
     public abstract class FormItem
     {
+        private Dictionary<string, string> _attributes;
+
+        protected FormItem(Dictionary<string, string> attributes)
+        {
+            _attributes = attributes;
+        }
+
+        public Dictionary<string, string> Attributes => _attributes;
         public string Type { get; protected set; } = "";
         public string Name { get; set; } = "";
         public string Color { get; set; } = KnownColors.Default;
@@ -65,7 +73,7 @@ namespace FormsParse.Models
 
     public class Button : FormItem 
     {
-        public Button()
+        public Button(Dictionary<string, string> attributes) : base(attributes)
         {
             Type = nameof(Button);
         }
@@ -73,7 +81,7 @@ namespace FormsParse.Models
 
     public class Label : FormItem 
     {
-        public Label()
+        public Label(Dictionary<string, string> attributes) : base(attributes)
         {
             Type = nameof(Label);
         }
@@ -81,7 +89,7 @@ namespace FormsParse.Models
 
     public class Switch : FormItem
     {
-        public Switch()
+        public Switch(Dictionary<string, string> attributes) : base(attributes)
         {
             Type = nameof(Switch);
         }
