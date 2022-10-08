@@ -89,7 +89,7 @@ namespace FormsParse
             }
             else
             {
-                _currentItem = new Button
+                _currentItem = new Button(new())
                 {
                     Name = ParseTagName()
                 };
@@ -112,10 +112,10 @@ namespace FormsParse
 
             _currentItem = type?.ToLower() switch
             {
-                "button" => new Button(),
-                "label" => new Label(),
-                "switch" => new Switch(),
-                _ => new Button()
+                "button" => new Button(attributes),
+                "label" => new Label(attributes),
+                "switch" => new Switch(attributes),
+                _ => new Button(attributes)
             };
                 
             _currentItem.Name = name ?? throw new ApplicationException("Name attribute not present in collection");
