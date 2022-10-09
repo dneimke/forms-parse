@@ -43,16 +43,16 @@ d
 
 ## Compound Buttons
 
-Use the `#(name[, color, label])` syntax to declare compound buttons which allow other button properties to be configured.
+Use the `#(name[, color, label])` syntax to declare compound buttons which allow button properties such as `color`, `type`, and other attributes to be configured.
 
-You can also use named attributes which allows you to specify attributes in any order. The following 2 declarations produce the same button:
+Compound buttons allow for the use of named attributes which allows you to specify attributes in any order. The following 2 declarations produce the same button:
 
 ```
 #(D, blue, switch)
 #(name: D, type: switch, color: blue)
 ```
 
-Compound button syntax requires use of the escaping construct `#(...)` which can then contain the following properties:
+Compound button syntax requires use of the escaping construct `#(...)` which can then contain the following attributes:
 
 - name - the name to display for the button
 - color - one of the permitted known colors.  If a non-known color
@@ -92,6 +92,46 @@ d
 --
 e
 f
+```
+
+## Connections
+
+An often-implemented feature in coding forms is connections.  Connections help automate actions and events that might need to propagate from a source event.
+
+Consider the following use case:
+
+```
+- User clicks a switch to indicate that Team A has possession
+- Team B gains possession
+- When the user clicks the Team B possession switch, the Team A possession switch should be off
+- Likewise, when the user clicks Team A possession switch, Team B possession switch should be off
+- Hence, only one of either Team A or Team B's possession switches should ever be on at the same time
+```
+
+In this example, a deactivate connection could be configured to ensure that only 1 switch remains active. The following psuedo-code demonstrates this:
+
+```
+#(name: Button A, type: switch, color: Red, tag: 1)
+#(name: Button B, type: switch, color: Blue, tag: 2)
+connections:
+#(type: deactivate, source: 1, target: 2)
+#(type: deactivate, source: 2, target: 1)
+```
+
+Another example is when a user wants to code events for both teams. Consider the following use case:
+
+```
+- User clicks a switch to indicate that Team A has scored a goal
+- It should be recorded that Team B conceded a goal
+```
+
+In this example, an activate connection could be configured to ensure that the opposing event is recorded when the Team A goal scored event is initiated. The following pseudo-code demonstrates this:
+
+```
+#(name: Team 1 Goal For, color: Red, tag: 1)
+#(name: Team 2 Goal Ag, tag: 2, hidden: true)
+connections:
+#(type: activate, source: 1, target: 2)
 ```
 
 ## Known Colors

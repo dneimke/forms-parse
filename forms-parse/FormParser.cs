@@ -1,4 +1,5 @@
 using FormsParse.Models;
+using System.Drawing;
 using System.Xml.Linq;
 
 namespace FormsParse
@@ -6,6 +7,7 @@ namespace FormsParse
     public class FormParser
     {
         private FormRow _currentGroup = new();
+        private List<Connection> _connections = new();
         private FormItem _currentItem;
 
         private readonly List<FormRow> _groups = new();
@@ -18,6 +20,7 @@ namespace FormsParse
         bool IsTagClose => _input[_pos] is ')';
         bool IsRowBreak => _input[_pos] is '-' && CanMoveNext && Peek() is '-';
         bool IsCompoundTag => _input[_pos] is '#' && CanMoveNext && Peek() is '(';
+        bool IsProcessingInstruction => _input[_pos] is '-';
         bool IsWhitespace => _input[_pos] is ' ';
 
         private char Peek()
@@ -41,7 +44,7 @@ namespace FormsParse
                 Next();
             }
 
-            return new FormDefinition(_groups);
+            return new FormDefinition(_groups, _connections);
         }
 
         void Next()
@@ -58,9 +61,32 @@ namespace FormsParse
             {
                 ParseColumnSeparator();
             }
+            else if (IsProcessingInstruction)
+            {
+                var token = ParseProcessingInstruction();
+                switch (token.ToLower()) 
+                {
+                    case "connections":
+                        ParseConnections();
+                        break;
+                    default:
+                        throw new ApplicationException($"Unknown token: {token}");
+                }
+            }
             else 
             {
                 ParseTag();
+            }
+        }
+
+        void ParseConnections()
+        {
+            ParseWhitespace();
+
+            while (CanMoveNext)
+            {
+                ParseConnection();
+                ParseWhitespace();
             }
         }
 
@@ -70,6 +96,22 @@ namespace FormsParse
             _pos++;
             _currentGroup = new();
             _groups.Add(_currentGroup);
+        }
+
+        private string ParseProcessingInstruction()
+        {
+            _pos++;
+            ParseWhitespace();
+
+            var token = "";
+
+            while (CanMoveNext && !IsNewLine)
+            {
+                token += _input[_pos++];
+            }
+
+            _pos++;
+            return token;
         }
 
         private void ParseColumnSeparator()
@@ -124,6 +166,31 @@ namespace FormsParse
             _currentGroup.AddItem(_currentItem);
         }
 
+        // #(type: deactivate, source: 1, target: 2)
+        void ParseConnection()
+        {
+            ParseTagOpen();
+            var attributeString = ParseTagAttributes();
+            ParseTagClose();
+
+            var attributes = AttributeParser.Parse(attributeString);
+            attributes.TryGetValue("type", out var type);
+            attributes.TryGetValue("source", out var source);
+            attributes.TryGetValue("target", out var target);
+
+            Connection connection = type?.ToLower() switch
+            {
+                "deactivate" => new DeactivateConnection(attributes),
+                "activate" => new ActivateConnection(attributes),
+                _ => throw new ApplicationException($"Unknown connection type: {type}")
+            };
+
+            connection.Source = source ?? throw new ApplicationException("A source for the connection was not specified");
+            connection.Target = target ?? throw new ApplicationException("A target for the connection was not specified");
+
+            _connections.Add(connection);
+        }
+
         void ParseTagOpen()
         {
             // #(
@@ -170,7 +237,7 @@ namespace FormsParse
 
         private void ParseWhitespace()
         {
-            while (CanMoveNext && IsWhitespace)
+            while (CanMoveNext && (IsWhitespace || IsNewLine))
             {
                 _pos++;
             }
