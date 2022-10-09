@@ -2,16 +2,16 @@ using FormsParse;
 using FormsParse.Models;
 using Shouldly;
 
-namespace forms_parse.tests.SimpleTags
+namespace forms_parse.tests.Buttons
 {
-    public class ShouldParseTags : ContainerTestBase
+    public class ShouldParseUnknownColors : ContainerTestBase
     {
         string _config = "";
         FormDefinition? _form;
 
-        void GivenAConfiguration()
+        void GivenAConfigurationWithTwoButtons()
         {
-            _config = string.Format("a{0}b", Environment.NewLine);
+            _config = string.Format("a{0}#(b, NotAKnownColor)", Environment.NewLine);
         }
 
         void WhenTheConfigurationIsParsed()
@@ -28,7 +28,7 @@ namespace forms_parse.tests.SimpleTags
         void AndIsDefinedCorrectly()
         {
             _form!.Rows.Count.ShouldBe(1);
-            
+
             var group = _form.Rows[0];
             _form.CurrentRow.ShouldBe(group);
             group.Columns.Count.ShouldBe(1);
@@ -40,7 +40,7 @@ namespace forms_parse.tests.SimpleTags
             buttons[0].Color.ShouldBe(KnownColors.Default);
 
             buttons[1].Name.ShouldBe("b");
-            buttons[1].Color.ShouldBe(KnownColors.Default);
+            buttons[1].Color.ShouldBe("NotAKnownColor");
         }
     }
 }

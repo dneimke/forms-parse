@@ -2,7 +2,7 @@ using FormsParse;
 using FormsParse.Models;
 using Shouldly;
 
-namespace forms_parse.tests.SimpleTags
+namespace forms_parse.tests.Buttons
 {
     public class ShouldParseAllTypes : ContainerTestBase
     {
@@ -11,7 +11,7 @@ namespace forms_parse.tests.SimpleTags
 
         void GivenAConfiguration()
         {
-            _config = string.Format("#(name: a, type: label){0}#(name: a, type: switch){0}#(name: a, type: button){0}#(name: a, type: unknown){0}", 
+            _config = string.Format("#(name: a, type: label){0}#(name: a, type: switch){0}#(name: a, type: button){0}#(name: a, type: unknown){0}",
                 Environment.NewLine);
         }
 
@@ -29,7 +29,7 @@ namespace forms_parse.tests.SimpleTags
         void AndAllTypesAreCorrect()
         {
             _form!.Rows.Count.ShouldBe(1);
-            
+
             var group = _form.Rows[0];
 
             var buttons = group.Columns[0].Items;

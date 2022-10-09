@@ -2,7 +2,7 @@ using FormsParse;
 using FormsParse.Models;
 using Shouldly;
 
-namespace forms_parse.tests.SimpleTags
+namespace forms_parse.tests.Conections
 {
     public class ConnectionsMustHaveAType : ContainerTestBase
     {
@@ -22,8 +22,8 @@ namespace forms_parse.tests.SimpleTags
                 var parser = new FormParser();
                 _form = parser.Parse(_config);
             }
-            catch(ApplicationException ex) 
-            { 
+            catch (ApplicationException ex)
+            {
                 _ex = ex;
             }
 
