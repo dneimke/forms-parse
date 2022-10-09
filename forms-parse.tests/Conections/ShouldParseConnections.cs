@@ -2,7 +2,7 @@ using FormsParse;
 using FormsParse.Models;
 using Shouldly;
 
-namespace forms_parse.tests.SimpleTags
+namespace forms_parse.tests.Conections
 {
     public class ShouldParseConnections : ContainerTestBase
     {

@@ -2,7 +2,7 @@ using FormsParse;
 using FormsParse.Models;
 using Shouldly;
 
-namespace forms_parse.tests.SimpleTags
+namespace forms_parse.tests.Attributes
 {
     public class ShouldAllowArbitraryAttributes : ContainerTestBase
     {
@@ -24,7 +24,7 @@ namespace forms_parse.tests.SimpleTags
         {
             var group = _form!.Rows[0];
             var buttons = group.Columns[0].Items;
-            
+
             buttons[0].Attributes.TryGetValue("foo", out var _).ShouldBeTrue();
             buttons[0].Attributes.TryGetValue("bar", out var _).ShouldBeFalse();
 

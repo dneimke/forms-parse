@@ -2,17 +2,16 @@ using FormsParse;
 using FormsParse.Models;
 using Shouldly;
 
-namespace forms_parse.tests.SimpleTags
+namespace forms_parse.tests.Buttons
 {
-    public class ShouldAllowNamedAttributesInAnyOrder : ContainerTestBase
+    public class ShouldParseTags : ContainerTestBase
     {
         string _config = "";
         FormDefinition? _form;
 
         void GivenAConfiguration()
         {
-            _config = string.Format("#(D, Blue, switch){0}#(name: D, type: switch, color: Blue)", 
-                Environment.NewLine);
+            _config = string.Format("a{0}b", Environment.NewLine);
         }
 
         void WhenTheConfigurationIsParsed()
@@ -26,23 +25,22 @@ namespace forms_parse.tests.SimpleTags
             _form.ShouldNotBeNull();
         }
 
-        void AndAllTypesAreCorrect()
+        void AndIsDefinedCorrectly()
         {
             _form!.Rows.Count.ShouldBe(1);
-            
+
             var group = _form.Rows[0];
+            _form.CurrentRow.ShouldBe(group);
+            group.Columns.Count.ShouldBe(1);
 
             var buttons = group.Columns[0].Items;
             buttons.Count.ShouldBe(2);
 
-            buttons[0].Name.ShouldBe("D");
-            buttons[0].Type.ShouldBe(nameof(Switch));
-            buttons[0].Color.ShouldBe(KnownColors.Blue);
+            buttons[0].Name.ShouldBe("a");
+            buttons[0].Color.ShouldBe(KnownColors.Default);
 
-            buttons[1].Name.ShouldBe("D");
-            buttons[1].Type.ShouldBe(nameof(Switch));
-            buttons[1].Color.ShouldBe(KnownColors.Blue);
-
+            buttons[1].Name.ShouldBe("b");
+            buttons[1].Color.ShouldBe(KnownColors.Default);
         }
     }
 }

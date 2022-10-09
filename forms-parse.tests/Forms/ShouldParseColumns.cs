@@ -2,7 +2,7 @@ using FormsParse;
 using FormsParse.Models;
 using Shouldly;
 
-namespace forms_parse.tests.SimpleTags
+namespace forms_parse.tests.Forms
 {
     public class ShouldParseColumns : ContainerTestBase
     {
@@ -28,7 +28,7 @@ namespace forms_parse.tests.SimpleTags
         void AndIsDefinedCorrectly()
         {
             _form!.Rows.Count.ShouldBe(1);
-            
+
             var group = _form.Rows[0];
             _form.CurrentRow.ShouldBe(group);
             group.Columns.Count.ShouldBe(2);

@@ -7,6 +7,7 @@ profile.json
 **/wwwroot/js
 **/wwwroot/dist
 **/wwwroot/css/matchlib.min.css
+**/TestResults/**.*
 
 # User-specific files
 *.suo

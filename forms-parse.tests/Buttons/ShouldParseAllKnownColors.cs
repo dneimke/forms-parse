@@ -2,7 +2,7 @@ using FormsParse;
 using FormsParse.Models;
 using Shouldly;
 
-namespace forms_parse.tests.SimpleTags
+namespace forms_parse.tests.Buttons
 {
     public class ShouldParseAllKnownColors : ContainerTestBase
     {
@@ -11,7 +11,7 @@ namespace forms_parse.tests.SimpleTags
 
         void GivenAConfiguration()
         {
-            _config = string.Format("#(a, {1}){0}#(b, {2}){0}#(c, {3}){0}#(d, {4}){0}#(e, {5})", 
+            _config = string.Format("#(a, {1}){0}#(b, {2}){0}#(c, {3}){0}#(d, {4}){0}#(e, {5})",
                 Environment.NewLine,
                 KnownColors.Gray, KnownColors.Blue, KnownColors.Black, KnownColors.Green, KnownColors.Red);
         }
@@ -30,7 +30,7 @@ namespace forms_parse.tests.SimpleTags
         void AndIsDefinedCorrectly()
         {
             _form!.Rows.Count.ShouldBe(1);
-            
+
             var group = _form.Rows[0];
             _form.CurrentRow.ShouldBe(group);
             group.Columns.Count.ShouldBe(1);
