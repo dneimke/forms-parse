@@ -1,3 +1,5 @@
+using System.Formats.Asn1;
+
 namespace FormsParse.Models
 {
     public static class KnownColors
@@ -27,6 +29,8 @@ namespace FormsParse.Models
 
         public FormRow CurrentRow => _currentRow;
 
+        public List<Connection> Connections { get; set; } = new();
+
 
         public FormDefinition()
         {
@@ -34,11 +38,18 @@ namespace FormsParse.Models
             Rows.Add(_currentRow);
         }
 
-        public FormDefinition(List<FormRow> groups)
+        public FormDefinition(List<FormRow> groups) : this(groups, new())
+        {
+            
+        }
+
+        public FormDefinition(List<FormRow> groups, List<Connection> connections)
         {
             Rows = groups ?? throw new ArgumentNullException(nameof(groups));
+            Connections = connections; 
 
-            if(groups.Any()) { 
+            if (groups.Any())
+            {
                 _currentRow = groups.Last();
             }
             else
@@ -69,6 +80,22 @@ namespace FormsParse.Models
         public string Type { get; protected set; } = "";
         public string Name { get; set; } = "";
         public string Color { get; set; } = KnownColors.Default;
+        public string? Tag => _attributes.Where(x => x.Key.ToLower() == "tag").Select(x => x.Value).FirstOrDefault();
+    }
+
+    public abstract class Connection
+    {
+        private Dictionary<string, string> _attributes;
+
+        protected Connection(Dictionary<string, string> attributes)
+        {
+            _attributes = attributes;
+        }
+
+        public Dictionary<string, string> Attributes => _attributes;
+        public string Type { get; protected set; } = "";
+        public string Source { get; set; } = "";
+        public string Target { get; set; } = "";
     }
 
     public class Button : FormItem 
@@ -92,6 +119,22 @@ namespace FormsParse.Models
         public Switch(Dictionary<string, string> attributes) : base(attributes)
         {
             Type = nameof(Switch);
+        }
+    }
+
+    public class ActivateConnection : Connection
+    {
+        public ActivateConnection(Dictionary<string, string> attributes) : base(attributes)
+        {
+            Type = nameof(ActivateConnection);
+        }
+    }
+
+    public class DeactivateConnection : Connection
+    {
+        public DeactivateConnection(Dictionary<string, string> attributes) : base(attributes)
+        {
+            Type = nameof(DeactivateConnection);
         }
     }
 

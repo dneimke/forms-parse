@@ -17,7 +17,10 @@ config = string.Format("#(a, Red){0}b{0}", Environment.NewLine);
 //Runner.Run(config, 1, 2, true);
 
 config = String.Format("#(a, Red){0}#(b, Green, Label){0}|{0}#(c, Blue){0}#(d, Blue){0}--{0}e{0}f", Environment.NewLine); // (name, [color, type])
-Runner.Run(config, 2, 6, true);
+// Runner.Run(config, 2, 6, true);
+
+config = string.Format("#(name: a, tag: 1){0}#(name: b, tag: 2){0}- connections{0}#(type: deactivate, source: 1, target: 2){0}#(type: activate, source: 2, target: 1)", Environment.NewLine);
+Runner.Run(config, 1, 2, true);
 
 Console.ReadKey();
 
@@ -33,6 +36,7 @@ static class Runner
         Console.WriteLine($"Processing {config}");
         Console.WriteLine($"Config contains {def.RowCount} group(s) vs. {expectedGroups} expected.");
         Console.WriteLine($"Config contains {def.TotalItemCount} item(s) vs {expectedItems} expected.");
+        Console.WriteLine($"Config contains {def.Connections.Count} connections.");
 
         var multiColumns = def.Rows.Where(x => x.Columns.Count > 1);
         for(int i = 0; i < multiColumns.Count(); i++)
@@ -50,6 +54,13 @@ static class Runner
             {
                 var item = def.AllItems[i];
                 Console.WriteLine($"Item {i + 1}: Name: {item.Name}, Color: {item.Color}, Type: {item.Type}");
+            }
+
+            Console.WriteLine("---------- connections ----------------");
+
+            foreach (var connection in def.Connections)
+            {
+                Console.WriteLine($"Connection: Type: {connection.Type}, Source: {connection.Source}, Target: {connection.Target}");
             }
         }
 
