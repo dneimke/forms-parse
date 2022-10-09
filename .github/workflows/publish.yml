@@ -37,7 +37,7 @@ jobs:
 
       # run tests with built project
       - name: Test PR      
-        run: dotnet test -c Release -l liquid.md # --logger:"liquid.md;LogFileName=${{github.workspace}}/${{env.file_name}};Title=${{env.title}};"
+        run: dotnet test -c Release --logger:"liquid.md;LogFileName=${{github.workspace}}/${{env.file_name}};Title=${{env.title}};"
       
         # upload report as build artifact
       #- name: Upload a Build Artifact
