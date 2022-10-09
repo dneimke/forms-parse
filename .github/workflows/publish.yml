@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main # Default release branch, may also be named 'master' or 'develop'
+  #pull_request:
+  #  branches: [ main ]
+
 jobs:
   publish:
     name: build, pack & publish
@@ -34,7 +37,7 @@ jobs:
 
       # run tests with built project
       - name: Test PR      
-        run: dotnet test --no-restore --no-build --configuration $config --logger:"liquid.md;LogFileName=${{github.workspace}}/${{env.file_name}};Title=${{env.title}};"
+        run: dotnet test --no-restore --no-build --configuration Release --logger:"liquid.md;LogFileName=${{github.workspace}}/${{env.file_name}};Title=${{env.title}};"
       
         # upload report as build artifact
       - name: Upload a Build Artifact
