@@ -105,12 +105,12 @@ namespace FormsParse
 
             var token = "";
 
-            while (CanMoveNext && !IsNewLine)
+            while (CanMoveNext && !IsWhitespace && !IsNewLine)
             {
                 token += _input[_pos++];
             }
 
-            _pos++;
+            ParseWhitespace();
             return token;
         }
 

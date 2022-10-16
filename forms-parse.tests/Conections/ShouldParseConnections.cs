@@ -11,7 +11,11 @@ namespace forms_parse.tests.Conections
 
         void GivenAConfigurationWithTwoConnections()
         {
-            _config = string.Format("#(name: a, tag: 1){0}#(name: b, tag: 2){0}- connections{0}#(type: deactivate, source: 1, target: 2){0}#(type: activate, source: 2, target: 1)", Environment.NewLine);
+            _config = @"#(name: Button A, type: switch, color: Red, tag: 1)
+#(name: Button B, type: switch, color: Blue, tag: 2)
+- connections 
+#(type: deactivate, source: 1, target: 2)
+#(type: activate, source: 2, target: 1)";
         }
 
         void WhenTheConfigurationIsParsed()

@@ -113,7 +113,7 @@ In this example, a deactivate connection could be configured to ensure that only
 ```
 #(name: Button A, type: switch, color: Red, tag: 1)
 #(name: Button B, type: switch, color: Blue, tag: 2)
-connections:
+- connections
 #(type: deactivate, source: 1, target: 2)
 #(type: deactivate, source: 2, target: 1)
 ```
@@ -130,7 +130,7 @@ In this example, an activate connection could be configured to ensure that the o
 ```
 #(name: Team 1 Goal For, color: Red, tag: 1)
 #(name: Team 2 Goal Ag, tag: 2, hidden: true)
-connections:
+- connections
 #(type: activate, source: 1, target: 2)
 ```
 
